@@ -64,7 +64,7 @@
             <HBox prefHeight="21.0" prefWidth="200.0">
                <children>
                   <CheckBox fx:id="showNumbers" mnemonicParsing="false" onAction="#showNumbersClicked" text="Show Numbers" />
-                  <CheckBox mnemonicParsing="false" onAction="#showPath" prefHeight="18.0" prefWidth="88.0" text="Show Path" />
+                  <CheckBox mnemonicParsing="false" fx:id="showPaths" onAction="#showPath" prefHeight="18.0" prefWidth="88.0" text="Show Path" />
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" />

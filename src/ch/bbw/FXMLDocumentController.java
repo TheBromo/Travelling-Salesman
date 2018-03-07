@@ -1,6 +1,7 @@
 package ch.bbw;
 
 import ch.bbw.model.Field;
+import ch.bbw.model.TSFormulas;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,6 +21,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 /**
@@ -34,18 +36,37 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private TextField amount;
     @FXML
-    private CheckBox showNumbers;
+    private CheckBox showNumbers, showPaths;
     @FXML
     private RadioButton greedy, random, tour;
     @FXML
     private GraphicsContext gc;
     private double mouseX, mouseY;
     private Field field;
+    private TSFormulas formulas;
     private Stage primaryStage;
+    private boolean pathShowing;
 
     @FXML
     public void handleButtonCalculate(ActionEvent event) {
+        showPaths.setDisable(false);
 
+        if (greedy.isSelected()) {
+
+        } else if (random.isSelected()) {
+            formulas.setRandompath((ArrayList<Point2D>) field.getPoint2DS());
+            distance.setText(formulas.getDisctance() + "");
+        } else if (tour.isSelected()) {
+
+        }
+        draw();
+    }
+
+    @FXML
+    public void showPath(ActionEvent event) {
+        //needs to be deactiveated when animation is rolling
+        pathShowing = showPaths.isSelected();
+        draw();
     }
 
     @FXML
@@ -114,7 +135,7 @@ public class FXMLDocumentController implements Initializable {
     private void draw() {
         gc.setFill(Color.WHITE);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
+        gc.setStroke(Color.BLACK);
         //heightline
         gc.strokeLine(mouseX, 0, mouseX, mouseY);
         gc.strokeText(Double.toString(mouseX), mouseX / 2, mouseY);
@@ -137,6 +158,20 @@ public class FXMLDocumentController implements Initializable {
             }
         }
         updateLog();
+        if (pathShowing) {
+            count = 0;
+            gc.setStroke(Color.BLUE);
+            for (Point2D point2D : formulas.getPoints()) {
+                count++;
+                if (formulas.getPoints().size() >count) {
+                    Point2D point = formulas.getPoints().get(count);
+                    gc.strokeLine(point2D.getX(), point2D.getY(), point.getX(), point.getY());
+                }
+            }
+            Point2D first = formulas.getPoints().get(0);
+            Point2D last = formulas.getPoints().get(formulas.getPoints().size()-1);
+            gc.strokeLine(first.getX(),first.getY(),last.getX(),last.getY());
+        }
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -147,9 +182,8 @@ public class FXMLDocumentController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         gc = canvas.getGraphicsContext2D();
         field = new Field();
+        formulas = new TSFormulas();
+        showPaths.setDisable(true);
     }
 
-    public void showPath(ActionEvent event) {
-        //needs to be deactiveated when animation is rolling
-    }
 }
