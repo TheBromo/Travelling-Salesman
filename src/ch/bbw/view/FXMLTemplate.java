@@ -1,5 +1,6 @@
-package ch.bbw;
+package ch.bbw.view;
 
+import ch.bbw.FXMLDocumentController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,11 +15,15 @@ public class FXMLTemplate extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/ch/bbw/FXMLDocument.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ch/bbw/view/FXMLDocument.fxml"));
+        Parent root1 = fxmlLoader.load();
+
         
-        Scene scene = new Scene(root);
-        
+        Scene scene = new Scene(root1);
+        FXMLDocumentController controller = fxmlLoader.getController();
+        controller.setPrimaryStage(stage);
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 
