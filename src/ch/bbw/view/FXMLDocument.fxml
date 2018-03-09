@@ -13,11 +13,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.bbw.FXMLDocumentController">
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.bbw.FXMLDocumentController">
    <children>
-      <VBox layoutX="600.0" prefHeight="600.0" prefWidth="200.0" style="-fx-background-color: lightgrey;">
+      <VBox layoutX="600.0" prefHeight="600.0" prefWidth="355.0" style="-fx-background-color: lightgrey;">
          <children>
-            <Button mnemonicParsing="false" onAction="#handleButtonCalculate" prefHeight="26.0" prefWidth="202.0" text="Calculate">
+            <Button mnemonicParsing="false" onAction="#handleButtonCalculate" prefHeight="26.0" prefWidth="378.0" text="Calculate">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
@@ -34,17 +34,17 @@
                </children>
             </HBox>
             <Label fx:id="distance" prefHeight="18.0" prefWidth="197.0" text="Distance:" />
-            <Button mnemonicParsing="false" onAction="#handleButtonImport" prefHeight="26.0" prefWidth="200.0" text="Import">
+            <Button mnemonicParsing="false" onAction="#handleButtonImport" prefHeight="26.0" prefWidth="371.0" text="Import">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </Button>
             <ScrollPane prefHeight="200.0" prefWidth="200.0">
                <content>
-                  <Label fx:id="log" alignment="TOP_LEFT" prefHeight="1000.0" prefWidth="180.0" style="-fx-background-color: white;" wrapText="true" />
+                  <VBox fx:id="log" prefHeight="200.0" prefWidth="171.0" />
                </content>
             </ScrollPane>
-            <Button mnemonicParsing="false" onAction="#handleButtonExport" prefHeight="26.0" prefWidth="202.0" text="Export">
+            <Button mnemonicParsing="false" onAction="#handleButtonExport" prefHeight="26.0" prefWidth="369.0" text="Export">
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin></Button>
@@ -63,14 +63,22 @@
             </HBox>
             <HBox prefHeight="21.0" prefWidth="200.0">
                <children>
-                  <CheckBox fx:id="showNumbers" mnemonicParsing="false" onAction="#showNumbersClicked" text="Show Numbers" />
-                  <CheckBox mnemonicParsing="false" fx:id="showPaths" onAction="#showPath" prefHeight="18.0" prefWidth="88.0" text="Show Path" />
+                  <CheckBox fx:id="showNumbers" mnemonicParsing="false" onAction="#showNumbersClicked" prefHeight="18.0" prefWidth="121.0" text="Show Numbers" />
+                  <CheckBox fx:id="showPaths" mnemonicParsing="false" onAction="#showPath" prefHeight="18.0" prefWidth="122.0" text="Show Path">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin></CheckBox>
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin>
             </HBox>
-            <Button mnemonicParsing="false" onAction="#handleButtonReset" prefHeight="26.0" prefWidth="220.0" text="reset" />
+            <HBox prefHeight="21.0" prefWidth="200.0">
+               <children>
+                  <CheckBox fx:id="showHelpLines" mnemonicParsing="false" text="Show help lines" />
+               </children>
+            </HBox>
+            <Button mnemonicParsing="false" onAction="#handleButtonReset" prefHeight="26.0" prefWidth="371.0" text="reset" />
          </children>
       </VBox>
       <Canvas fx:id="canvas" height="600.0" onMouseClicked="#handleMouseClicked" onMouseMoved="#handleMouseMoved" width="600.0" />

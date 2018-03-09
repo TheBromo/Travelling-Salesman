@@ -1,7 +1,7 @@
 package ch.bbw;
 
 import ch.bbw.model.Field;
-import ch.bbw.model.TSFormulas;
+import ch.bbw.model.Route;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,11 +13,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -30,20 +30,22 @@ import java.util.ResourceBundle;
 public class FXMLDocumentController implements Initializable {
 
     @FXML
-    private Label log, distance;
+    private Label distance;
+    @FXML
+    private VBox log;
     @FXML
     private Canvas canvas;
     @FXML
     private TextField amount;
     @FXML
-    private CheckBox showNumbers, showPaths;
+    private CheckBox showNumbers, showPaths, showHelpLines;
     @FXML
     private RadioButton greedy, random, tour;
     @FXML
     private GraphicsContext gc;
     private double mouseX, mouseY;
     private Field field;
-    private TSFormulas formulas;
+    private Route formulas;
     private Stage primaryStage;
     private boolean pathShowing;
 
@@ -52,13 +54,16 @@ public class FXMLDocumentController implements Initializable {
         showPaths.setDisable(false);
 
         if (greedy.isSelected()) {
-
+            formulas.setGreedy((ArrayList<Point2D>) field.getPoint2DS());
         } else if (random.isSelected()) {
-            formulas.setRandompath((ArrayList<Point2D>) field.getPoint2DS());
-            distance.setText(formulas.getDisctance() + "");
+            formulas.setRandomPath((ArrayList<Point2D>) field.getPoint2DS());
         } else if (tour.isSelected()) {
-
+            formulas.setTwoOpt((ArrayList<Point2D>) field.getPoint2DS());
         }
+        distance.setText(formulas.getDistance() + "");
+
+        showPaths.setSelected(true);
+        pathShowing = true;
         draw();
     }
 
@@ -117,6 +122,7 @@ public class FXMLDocumentController implements Initializable {
     public void handleButtonReset(ActionEvent event) {
         field.clear();
         draw();
+        //TODO Reset formula
     }
 
     public void showNumbersClicked(ActionEvent event) {
@@ -124,11 +130,11 @@ public class FXMLDocumentController implements Initializable {
     }
 
     private void updateLog() {
-        log.setText("");
+        log.getChildren().clear();
         int count = 0;
         for (Point2D point2D : field.getPoint2DS()) {
             count++;
-            log.setText(log.getText() + "\n" + count + ") x:" + point2D.getX() + " y:" + point2D.getY());
+            log.getChildren().add(new Label(count + ") x:" + point2D.getX() + " y:" + point2D.getY()));
         }
     }
 
@@ -136,13 +142,15 @@ public class FXMLDocumentController implements Initializable {
         gc.setFill(Color.WHITE);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.setStroke(Color.BLACK);
-        //heightline
-        gc.strokeLine(mouseX, 0, mouseX, mouseY);
-        gc.strokeText(Double.toString(mouseX), mouseX / 2, mouseY);
+        if (showHelpLines.isSelected()) {
+            //heightline
+            gc.strokeLine(mouseX, 0, mouseX, mouseY);
+            gc.strokeText(Double.toString(mouseX), mouseX / 2, mouseY);
 
-        //widthline
-        gc.strokeLine(0, mouseY, mouseX, mouseY);
-        gc.strokeText(Double.toString(mouseY), mouseX, mouseY / 2);
+            //widthline
+            gc.strokeLine(0, mouseY, mouseX, mouseY);
+            gc.strokeText(Double.toString(mouseY), mouseX, mouseY / 2);
+        }
 
         //dots
         int count = 0;
@@ -163,14 +171,14 @@ public class FXMLDocumentController implements Initializable {
             gc.setStroke(Color.BLUE);
             for (Point2D point2D : formulas.getPoints()) {
                 count++;
-                if (formulas.getPoints().size() >count) {
+                if (formulas.getPoints().size() > count) {
                     Point2D point = formulas.getPoints().get(count);
                     gc.strokeLine(point2D.getX(), point2D.getY(), point.getX(), point.getY());
                 }
             }
             Point2D first = formulas.getPoints().get(0);
-            Point2D last = formulas.getPoints().get(formulas.getPoints().size()-1);
-            gc.strokeLine(first.getX(),first.getY(),last.getX(),last.getY());
+            Point2D last = formulas.getPoints().get(formulas.getPoints().size() - 1);
+            gc.strokeLine(first.getX(), first.getY(), last.getX(), last.getY());
         }
     }
 
@@ -182,7 +190,7 @@ public class FXMLDocumentController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         gc = canvas.getGraphicsContext2D();
         field = new Field();
-        formulas = new TSFormulas();
+        formulas = new Route();
         showPaths.setDisable(true);
     }
 
