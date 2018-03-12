@@ -1,86 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import java.lang.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleGroup?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.bbw.FXMLDocumentController">
-   <children>
-      <VBox layoutX="600.0" prefHeight="600.0" prefWidth="355.0" style="-fx-background-color: lightgrey;">
-         <children>
-            <Button mnemonicParsing="false" onAction="#handleButtonCalculate" prefHeight="26.0" prefWidth="378.0" text="Calculate">
-               <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
-               </VBox.margin>
-            </Button>
-            <HBox prefHeight="24.0" prefWidth="200.0">
-               <children>
-                  <RadioButton fx:id="random" mnemonicParsing="false" selected="true" text="Random">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="searchtype" />
-                     </toggleGroup>
-                  </RadioButton>
-                  <RadioButton fx:id="greedy" mnemonicParsing="false" text="Greedy" toggleGroup="$searchtype" />
-                  <RadioButton fx:id="tour" mnemonicParsing="false" text="Tour" toggleGroup="$searchtype" />
-               </children>
-            </HBox>
-            <Label fx:id="distance" prefHeight="18.0" prefWidth="197.0" text="Distance:" />
-            <Button mnemonicParsing="false" onAction="#handleButtonImport" prefHeight="26.0" prefWidth="371.0" text="Import">
-               <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
-               </VBox.margin>
-            </Button>
-            <ScrollPane prefHeight="200.0" prefWidth="200.0">
-               <content>
-                  <VBox fx:id="log" prefHeight="200.0" prefWidth="171.0" />
-               </content>
-            </ScrollPane>
-            <Button mnemonicParsing="false" onAction="#handleButtonExport" prefHeight="26.0" prefWidth="369.0" text="Export">
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin></Button>
-            <HBox prefHeight="34.0" prefWidth="200.0">
-               <children>
-                  <TextField fx:id="amount" prefHeight="26.0" prefWidth="98.0" promptText="Amount" />
-                  <Button mnemonicParsing="false" onAction="#handleButtonGenerate" text="Generate">
-                     <HBox.margin>
-                        <Insets left="10.0" />
-                     </HBox.margin>
-                  </Button>
-               </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox prefHeight="21.0" prefWidth="200.0">
-               <children>
-                  <CheckBox fx:id="showNumbers" mnemonicParsing="false" onAction="#showNumbersClicked" prefHeight="18.0" prefWidth="121.0" text="Show Numbers" />
-                  <CheckBox fx:id="showPaths" mnemonicParsing="false" onAction="#showPath" prefHeight="18.0" prefWidth="122.0" text="Show Path">
-                     <HBox.margin>
-                        <Insets left="5.0" />
-                     </HBox.margin></CheckBox>
-               </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox prefHeight="21.0" prefWidth="200.0">
-               <children>
-                  <CheckBox fx:id="showHelpLines" mnemonicParsing="false" text="Show help lines" />
-               </children>
-            </HBox>
-            <Button mnemonicParsing="false" onAction="#handleButtonReset" prefHeight="26.0" prefWidth="371.0" text="reset" />
-         </children>
-      </VBox>
-      <Canvas fx:id="canvas" height="600.0" onMouseClicked="#handleMouseClicked" onMouseMoved="#handleMouseMoved" width="600.0" />
-   </children>
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.bbw.FXMLDocumentController">
+    <children>
+        <VBox layoutX="600.0" prefHeight="600.0" prefWidth="355.0" style="-fx-background-color: lightgrey;">
+            <children>
+                <Button mnemonicParsing="false" onAction="#handleButtonCalculate" prefHeight="26.0" prefWidth="378.0" text="Calculate">
+                    <VBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                    </VBox.margin>
+                </Button>
+                <HBox prefHeight="24.0" prefWidth="200.0">
+                    <children>
+                        <RadioButton fx:id="random" mnemonicParsing="false" selected="true" text="Random">
+                            <toggleGroup>
+                                <ToggleGroup fx:id="searchtype" />
+                            </toggleGroup>
+                        </RadioButton>
+                        <RadioButton fx:id="greedy" mnemonicParsing="false" text="Greedy" toggleGroup="$searchtype" />
+                        <RadioButton fx:id="tour" mnemonicParsing="false" text="Tour" toggleGroup="$searchtype" />
+                  <RadioButton fx:id="genetic" mnemonicParsing="false" text="Genetic" toggleGroup="$searchtype" />
+                    </children>
+                </HBox>
+            <ProgressBar fx:id="progress" prefHeight="18.0" prefWidth="362.0" />
+                <HBox fx:id="trainingHBox" prefHeight="35.0" prefWidth="355.0" />
+                <Label fx:id="distance" prefHeight="18.0" prefWidth="197.0" text="Distance:" />
+                <Button mnemonicParsing="false" onAction="#handleButtonImport" prefHeight="26.0" prefWidth="371.0" text="Import">
+                    <VBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                    </VBox.margin>
+                </Button>
+                <ScrollPane prefHeight="200.0" prefWidth="200.0">
+                    <content>
+                        <VBox fx:id="log" prefHeight="200.0" prefWidth="171.0" />
+                    </content>
+                </ScrollPane>
+                <Button mnemonicParsing="false" onAction="#handleButtonExport" prefHeight="26.0" prefWidth="369.0" text="Export">
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </Button>
+                <HBox prefHeight="34.0" prefWidth="200.0">
+                    <children>
+                        <TextField fx:id="amount" prefHeight="26.0" prefWidth="98.0" promptText="Amount" />
+                        <Button mnemonicParsing="false" onAction="#handleButtonGenerate" text="Generate">
+                            <HBox.margin>
+                                <Insets left="10.0" />
+                            </HBox.margin>
+                        </Button>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </HBox>
+                <HBox prefHeight="21.0" prefWidth="200.0">
+                    <children>
+                        <CheckBox fx:id="showNumbers" mnemonicParsing="false" onAction="#showNumbersClicked" prefHeight="18.0" prefWidth="121.0" text="Show Numbers" />
+                        <CheckBox fx:id="showPaths" mnemonicParsing="false" onAction="#showPath" prefHeight="18.0" prefWidth="122.0" text="Show Path">
+                            <HBox.margin>
+                                <Insets left="5.0" />
+                            </HBox.margin>
+                        </CheckBox>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </HBox>
+                <HBox prefHeight="21.0" prefWidth="200.0">
+                    <children>
+                        <CheckBox fx:id="showHelpLines" mnemonicParsing="false" text="Show help lines" />
+                    </children>
+                </HBox>
+                <Button mnemonicParsing="false" onAction="#handleButtonReset" prefHeight="26.0" prefWidth="371.0" text="reset" />
+            </children>
+        </VBox>
+        <Canvas fx:id="canvas" height="600.0" onMouseClicked="#handleMouseClicked" onMouseMoved="#handleMouseMoved" width="600.0" />
+    </children>
 </AnchorPane>

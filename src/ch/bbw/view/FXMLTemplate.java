@@ -23,7 +23,6 @@ public class FXMLTemplate extends Application {
         FXMLDocumentController controller = fxmlLoader.getController();
         controller.setPrimaryStage(stage);
         stage.setScene(scene);
-        stage.setResizable(false);
         stage.show();
     }
 
