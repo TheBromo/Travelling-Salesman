@@ -14,6 +14,10 @@ public class Field {
         point2DS = new ArrayList<>();
     }
 
+    public void setPoint2DS(List<Point2D> point2DS) {
+        this.point2DS = point2DS;
+    }
+
     public void addPoint2D(double x, double y) {
         point2DS.add(new Point2D(x, y));
     }

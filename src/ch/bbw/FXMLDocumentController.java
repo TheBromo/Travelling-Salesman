@@ -267,16 +267,19 @@ public class FXMLDocumentController implements Initializable {
                     gc.strokeLine(point2D.getX(), point2D.getY(), point.getX(), point.getY());
                 }
             }
-            Point2D first = route.getPoints().get(0);
-            Point2D last = route.getPoints().get(route.getPoints().size() - 1);
-            gc.strokeLine(first.getX(), first.getY(), last.getX(), last.getY());
+            if(route.getPoints().size()!=0) {
+                Point2D first = route.getPoints().get(0);
+                Point2D last = route.getPoints().get(route.getPoints().size() - 1);
+                gc.strokeLine(first.getX(), first.getY(), last.getX(), last.getY());
+            }
         }
-        if (calculated) {
+
             distance.setText(route.getDistance() + "");
-        }
+
     }
 
     public void drawExtern() {
+          //TODO paint the best of the generation
         Platform.runLater(this::draw);
     }
 

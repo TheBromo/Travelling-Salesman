@@ -224,14 +224,17 @@ public class Route {
 
         double disctance = 0;
         int count = 0;
-        for (Point2D point2D : points) {
+        for (Point2D point2D : this.points) {
             count++;
             if (points.size() > count) {
                 disctance += point2D.distance(points.get(count).getX(), points.get(count).getY());
             }
         }
-        disctance += points.get(0).distance(points.get(points.size() - 1).getX(), points.get(points.size() - 1).getY());
-        this.distance=disctance;
+        if (points.size()!=0) {
+            disctance += points.get(0).distance(points.get(points.size() - 1).getX(), points.get(points.size() - 1).getY());
+        }
+        this.distance = disctance;
+
         return this.distance;
     }
 
@@ -246,7 +249,9 @@ public class Route {
                 disctance += point2D.distance(points.get(count).getX(), points.get(count).getY());
             }
         }
-        disctance += points.get(0).distance(points.get(points.size() - 1).getX(), points.get(points.size() - 1).getY());
+        if (points.size()!=0) {
+            disctance += points.get(0).distance(points.get(points.size() - 1).getX(), points.get(points.size() - 1).getY());
+        }
         this.distance=disctance;
         return this.distance;
     }

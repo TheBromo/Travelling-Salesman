@@ -19,6 +19,15 @@ public class GARoute {
         this.fitness = fitness;
     }
 
+    public GARoute(GARoute route) {
+        this.points = new ArrayList<>(route.getPoints());
+        this.fitness = route.getFitness();
+        this.disctance = route.getDisctance();
+    }
+
+    public GARoute(double fitness) {
+        this.fitness = fitness;
+    }
 
     private void shuffle() {
         Collections.shuffle(points);
@@ -34,7 +43,6 @@ public class GARoute {
                 disctance += point2D.distance(points.get(count).getX(), points.get(count).getY());
             }
         }
-        disctance += points.get(0).distance(points.get(points.size() - 1).getX(), points.get(points.size() - 1).getY());
         fitness = 1 / (disctance + 1);
     }
 
@@ -55,6 +63,12 @@ public class GARoute {
     }
 
     public double getFitness() {
+
+        return fitness;
+    }
+
+    public double initFitness(){
+        calculateFitness();
         return fitness;
     }
 

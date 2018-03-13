@@ -17,7 +17,7 @@ public class GA {
 
         for (int i = 0; i < 100; i++) {
             population.add(new GARoute(points));
-            totalfitness += population.get(0).getFitness();
+            totalfitness += population.get(i).initFitness();
         }
         for (GARoute route : population) {
             route.normalizeFitness(totalfitness);
@@ -44,28 +44,32 @@ public class GA {
         }
         for (GARoute route : population) {
             if (route.getDisctance() < bestRoute.getDisctance()) {
-                bestRoute = route;
+                bestRoute = new GARoute(route);
             }
         }
+
+        System.out.println("Best Route : "+"Distance: " + bestRoute.disctance + " Fitness: " + bestRoute.getFitness());
     }
 
     private void nextGeneration() {
         ArrayList<GARoute> newGen = new ArrayList<>();
         for (int i = 0; i < population.size(); i++) {
             newGen.add(pickOne());
-            mutate(newGen.get(i), 7);
+            mutate(newGen.get(i), 30);
         }
 
         population = new ArrayList<>(newGen);
 
     }
 
-    private void mutate(GARoute route, double mutationRate) {
+    private void mutate(GARoute route, int mutationRate) {
         Random random = new Random();
-        for (int i = 0; i < mutationRate; i++) {
-            int indexA = (int) Math.floor(random.nextInt(route.getPoints().size()));
-            int indexB = (int) Math.floor(random.nextInt(route.getPoints().size()));
-            route.swap(indexA, indexB);
+        for (int i = 0; i < route.getPoints().size(); i++) {
+            if (random.nextInt(100)<mutationRate) {
+                int indexA = (int) Math.floor(random.nextInt(route.getPoints().size()));
+                int indexB = (int) Math.floor(random.nextInt(route.getPoints().size()));
+                route.swap(indexA, indexB);
+            }
         }
 
 
