@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -32,7 +33,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private ProgressBar progress;
     @FXML
-    private Label distance;
+    private Label distance, poss;
     @FXML
     private HBox trainingHBox;
     @FXML
@@ -44,7 +45,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private CheckBox showNumbers, showPaths, showHelpLines;
     @FXML
-    private RadioButton greedy, random, tour,genetic,sm;
+    private RadioButton greedy, random, tour, genetic, sm;
     @FXML
     private GraphicsContext gc;
     private TextField iterations;
@@ -52,11 +53,11 @@ public class FXMLDocumentController implements Initializable {
     private Field field;
     private CalcRoute calcRoute;
     private Stage primaryStage;
-    private boolean pathShowing, animationPlaying,calculated;
+    private boolean pathShowing, animationPlaying, calculated;
 
     @FXML
     public void handleButtonCalculate(ActionEvent event) {
-        calculated =true;
+        calculated = true;
         showPaths.setDisable(false);
         removeControls();
         setProgress();
@@ -72,20 +73,19 @@ public class FXMLDocumentController implements Initializable {
             Runnable runnable = () -> calcRoute.setTwoOpt((ArrayList<Point2D>) field.getPoint2DS());
             runningThread = new Thread(runnable);
             runningThread.start();
-        }else if (genetic.isSelected()){
-            Runnable runnable =()-> calcRoute.geneticAlg((ArrayList<Point2D>) field.getPoint2DS());
+        } else if (genetic.isSelected()) {
+            Runnable runnable = () -> calcRoute.geneticAlg((ArrayList<Point2D>) field.getPoint2DS());
             runningThread = new Thread(runnable);
             runningThread.start();
-        }
-        else if (sm.isSelected()){
-            Runnable runnable =()-> calcRoute.simulatedAnnealing((ArrayList<Point2D>) field.getPoint2DS());
+        } else if (sm.isSelected()) {
+            Runnable runnable = () -> calcRoute.simulatedAnnealing((ArrayList<Point2D>) field.getPoint2DS());
             runningThread = new Thread(runnable);
             runningThread.start();
         }
         showPaths.setSelected(true);
         pathShowing = true;
         draw();
-        distance.setText(calcRoute.getDistance() + "");
+        distance.setText("Distance: " + calcRoute.getDistance() + "");
 
     }
 
@@ -130,9 +130,11 @@ public class FXMLDocumentController implements Initializable {
         if (!animationPlaying) {
 
             field.addPoint2D(event.getX(), event.getY());
+            possText();
             draw();
         }
     }
+
 
     @FXML
     public void handleMouseMoved(MouseEvent event) {
@@ -148,8 +150,9 @@ public class FXMLDocumentController implements Initializable {
     public void handleButtonGenerate(ActionEvent event) {
         if (!animationPlaying) {
 
-            int amout = Integer.parseInt(amount.getText());
-            field.generate(amout, (int) canvas.getWidth(), (int) canvas.getHeight());
+            int amount = Integer.parseInt(this.amount.getText());
+            field.generate(amount, (int) canvas.getWidth(), (int) canvas.getHeight());
+            possText();
             draw();
         }
     }
@@ -272,21 +275,21 @@ public class FXMLDocumentController implements Initializable {
                     gc.strokeLine(point2D.getX(), point2D.getY(), point.getX(), point.getY());
                 }
             }
-            if(calcRoute.getPoints().size()!=0) {
+            if (calcRoute.getPoints().size() != 0) {
                 Point2D first = calcRoute.getPoints().get(0);
                 Point2D last = calcRoute.getPoints().get(calcRoute.getPoints().size() - 1);
                 gc.strokeLine(first.getX(), first.getY(), last.getX(), last.getY());
             }
         }
 
-            distance.setText(calcRoute.getDistance() + "");
+        distance.setText("Distance: " + calcRoute.getDistance() + "");
 
     }
 
-    void drawPoints(ArrayList<Point2D>points){
+    void drawPoints(ArrayList<Point2D> points) {
         if (pathShowing) {
             int count = 0;
-            gc.setStroke(Color.color(1,0,0,0.3));
+            gc.setStroke(Color.color(1, 0, 0, 0.3));
             for (Point2D point2D : points) {
                 count++;
                 if (points.size() > count) {
@@ -294,7 +297,7 @@ public class FXMLDocumentController implements Initializable {
                     gc.strokeLine(point2D.getX(), point2D.getY(), point.getX(), point.getY());
                 }
             }
-            if(points.size()!=0) {
+            if (points.size() != 0) {
                 Point2D first = points.get(0);
                 Point2D last = points.get(points.size() - 1);
                 gc.strokeLine(first.getX(), first.getY(), last.getX(), last.getY());
@@ -303,16 +306,19 @@ public class FXMLDocumentController implements Initializable {
     }
 
     public void drawExtern() {
-
         Platform.runLater(this::draw);
     }
 
     public void drawExternGA(ArrayList<Point2D> secondbest) {
 
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             draw();
             drawPoints(secondbest);
         });
+    }
+
+    private void possText() {
+        poss.setText("Possibilities: " + calcRoute.factorial(BigInteger.valueOf(field.getPoint2DS().size())));
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -326,7 +332,7 @@ public class FXMLDocumentController implements Initializable {
         calcRoute = new CalcRoute(this);
         showPaths.setDisable(true);
         animationPlaying = false;
-        calculated=false;
+        calculated = false;
     }
 
 }

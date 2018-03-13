@@ -7,21 +7,21 @@ import java.util.Random;
 
 public class GA {
     ArrayList<GARoute> population;
-    double totalfitness;
+    double totalFitness;
     GARoute bestRoute;
 
     public GA(ArrayList<Point2D> points) {
 
-        totalfitness = 0;
+        totalFitness = 0;
         population = new ArrayList<>();
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 300; i++) {
             population.add(new GARoute(points));
             population.get(i).shuffle();
-            totalfitness += population.get(i).initFitness();
+            totalFitness += population.get(i).initFitness();
         }
         for (GARoute route : population) {
-            route.normalizeFitness(totalfitness);
+            route.normalizeFitness(totalFitness);
         }
         bestRoute = population.get(0);
     }
@@ -59,7 +59,10 @@ public class GA {
     private void nextGeneration() {
         ArrayList<GARoute> newGen = new ArrayList<>();
         for (int i = 0; i < population.size(); i++) {
-            newGen.add(pickOne());
+            GARoute list1 = pickOne();
+            GARoute list2 = pickOne();
+            ArrayList<Point2D> newList = crossover(list1.getPoints(), list2.getPoints());
+            newGen.add( new GARoute(newList));
             mutate(newGen.get(i), 0.01);
         }
         population = new ArrayList<>(newGen);
@@ -85,7 +88,7 @@ public class GA {
             index++;
         }
         index--;
-        if (Math.random()>0.99){
+        if (Math.random() > 0.99) {
             return new GARoute(bestRoute.getPoints(), bestRoute.getFitness());
         }
         return new GARoute(population.get(index).getPoints(), population.get(index).getFitness());
@@ -93,16 +96,37 @@ public class GA {
 
 
     private void updateFitness() {
-        totalfitness = 0;
+        totalFitness = 0;
         for (GARoute route : population) {
             route.calculateFitness();
-            totalfitness += route.getFitness();
+            totalFitness += route.getFitness();
         }
     }
 
     private void normalizeFitness() {
         for (GARoute route : population) {
-            route.normalizeFitness(totalfitness);
+            route.normalizeFitness(totalFitness);
         }
     }
+
+    private ArrayList<Point2D> crossover(ArrayList<Point2D> list1, ArrayList<Point2D> list2) {
+        ArrayList<Point2D> newList = new ArrayList<>();
+        int start = new Random().nextInt(list1.size());
+        int end = 1 + start + new Random().nextInt(list1.size() - start);
+
+
+
+        for (int i = start; i < end; i++) {
+            newList.add(list1.get(i));
+        }
+        int left = list1.size() - newList.size();
+        for (Point2D point2D : list2) {
+            if (!newList.contains(point2D)) {
+                newList.add(point2D);
+            }
+        }
+        return newList;
+
+    }
+
 }

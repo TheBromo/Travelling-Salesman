@@ -3,6 +3,7 @@ package ch.bbw.model;
 import ch.bbw.FXMLDocumentController;
 import javafx.geometry.Point2D;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -322,5 +323,16 @@ public class CalcRoute {
 
     public ArrayList<Point2D> getPoints() {
         return points;
+    }
+
+
+    public BigInteger factorial(BigInteger number) {
+        BigInteger result = BigInteger.valueOf(1);
+
+        for (long factor = 2; factor <= number.longValue(); factor++) {
+            result = result.multiply(BigInteger.valueOf(factor));
+        }
+
+        return result;
     }
 }

@@ -31,7 +31,8 @@
                 </HBox>
             <ProgressBar fx:id="progress" prefHeight="18.0" prefWidth="414.0" />
                 <HBox fx:id="trainingHBox" prefHeight="35.0" prefWidth="355.0" />
-                <Label fx:id="distance" prefHeight="18.0" prefWidth="197.0" text="Distance:" />
+                <Label fx:id="distance" prefHeight="18.0" prefWidth="401.0" text="Distance:" />
+            <Label fx:id="poss" prefHeight="17.0" prefWidth="404.0" text="Possibilities:" />
                 <Button mnemonicParsing="false" onAction="#handleButtonImport" prefHeight="26.0" prefWidth="371.0" text="Import">
                     <VBox.margin>
                         <Insets bottom="10.0" top="10.0" />
