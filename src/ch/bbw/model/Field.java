@@ -14,16 +14,16 @@ public class Field {
         point2DS = new ArrayList<>();
     }
 
-    public void setPoint2DS(List<Point2D> point2DS) {
-        this.point2DS = point2DS;
-    }
-
     public void addPoint2D(double x, double y) {
         point2DS.add(new Point2D(x, y));
     }
 
     public List<Point2D> getPoint2DS() {
         return point2DS;
+    }
+
+    public void setPoint2DS(List<Point2D> point2DS) {
+        this.point2DS = point2DS;
     }
 
     public void clear() {
@@ -38,12 +38,12 @@ public class Field {
     }
 
     public void exportData() throws IOException {
-        String data = "";
+        StringBuilder data = new StringBuilder();
         for (Point2D point2D : point2DS) {
-            data = data +point2D.getX() + "," + point2D.getY()+"\n";
+            data.append(point2D.getX()).append(",").append(point2D.getY()).append("\n");
         }
-        BufferedWriter writer = new BufferedWriter(new FileWriter("TravellingSalesmanExport" + System.currentTimeMillis()+".travel"));
-        writer.write(data);
+        BufferedWriter writer = new BufferedWriter(new FileWriter("TravellingSalesmanExport" + System.currentTimeMillis() + ".travel"));
+        writer.write(data.toString());
         writer.close();
     }
 

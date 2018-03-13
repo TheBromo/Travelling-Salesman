@@ -3,72 +3,44 @@ package ch.bbw.model;
 import javafx.geometry.Point2D;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
-public class GARoute {
-    ArrayList<Point2D> points;
-    double fitness, disctance;
+public class GARoute extends Route {
+    double fitness;
 
-    public GARoute(ArrayList<Point2D> points) {
-        this.points = new ArrayList<>(points);
-        shuffle();
-    }
 
     public GARoute(ArrayList<Point2D> points, double fitness) {
-        this.points = points;
+        super(points);
         this.fitness = fitness;
+        distance = calcDistance();
     }
 
     public GARoute(GARoute route) {
-        this.points = new ArrayList<>(route.getPoints());
+        super(route.getPoints());
+        this.distance = calcDistance();
         this.fitness = route.getFitness();
-        this.disctance = route.getDisctance();
+
+    }
+
+    public GARoute(ArrayList<Point2D> points) {
+        super(points);
+        distance = calcDistance();
     }
 
     public GARoute(double fitness) {
         this.fitness = fitness;
     }
 
-    private void shuffle() {
-        Collections.shuffle(points);
-    }
 
     public void calculateFitness() {
-        disctance = 0;
-
-        int count = 0;
-        for (Point2D point2D : points) {
-            count++;
-            if (points.size() > count) {
-                disctance += point2D.distance(points.get(count).getX(), points.get(count).getY());
-            }
-        }
-        fitness = 1 / (disctance + 1);
-    }
-
-    void swap(int indexA, int indexB) {
-        Point2D temp = points.get(indexA);
-        points.set(indexA, points.get(indexB));
-        points.set(indexB, temp);
-
+        distance = calcDistance();
+        fitness = 1 / (distance + 1);
     }
 
     public void normalizeFitness(double totalFitness) {
         fitness = fitness / totalFitness;
-
-    }
-
-    public ArrayList<Point2D> getPoints() {
-        return points;
     }
 
     public double getFitness() {
-
-        return fitness;
-    }
-
-    public double initFitness(){
-        calculateFitness();
         return fitness;
     }
 
@@ -76,7 +48,10 @@ public class GARoute {
         this.fitness = fitness;
     }
 
-    public double getDisctance() {
-        return disctance;
+    public double initFitness() {
+        calculateFitness();
+        return fitness;
     }
+
+
 }

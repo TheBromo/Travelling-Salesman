@@ -9,9 +9,9 @@
 
 <AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.bbw.FXMLDocumentController">
     <children>
-        <VBox layoutX="600.0" prefHeight="600.0" prefWidth="355.0" style="-fx-background-color: lightgrey;">
+        <VBox layoutX="600.0" prefHeight="600.0" prefWidth="402.0" style="-fx-background-color: lightgrey;">
             <children>
-                <Button mnemonicParsing="false" onAction="#handleButtonCalculate" prefHeight="26.0" prefWidth="378.0" text="Calculate">
+                <Button mnemonicParsing="false" onAction="#handleButtonCalculate" prefHeight="26.0" prefWidth="424.0" text="Calculate">
                     <VBox.margin>
                         <Insets bottom="10.0" top="10.0" />
                     </VBox.margin>
@@ -26,9 +26,10 @@
                         <RadioButton fx:id="greedy" mnemonicParsing="false" text="Greedy" toggleGroup="$searchtype" />
                         <RadioButton fx:id="tour" mnemonicParsing="false" text="Tour" toggleGroup="$searchtype" />
                   <RadioButton fx:id="genetic" mnemonicParsing="false" text="Genetic" toggleGroup="$searchtype" />
+                  <RadioButton fx:id="sm" mnemonicParsing="false" text="Simulated Annealing" toggleGroup="$searchtype" />
                     </children>
                 </HBox>
-            <ProgressBar fx:id="progress" prefHeight="18.0" prefWidth="362.0" />
+            <ProgressBar fx:id="progress" prefHeight="18.0" prefWidth="414.0" />
                 <HBox fx:id="trainingHBox" prefHeight="35.0" prefWidth="355.0" />
                 <Label fx:id="distance" prefHeight="18.0" prefWidth="197.0" text="Distance:" />
                 <Button mnemonicParsing="false" onAction="#handleButtonImport" prefHeight="26.0" prefWidth="371.0" text="Import">
