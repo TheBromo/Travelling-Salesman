@@ -9,6 +9,7 @@ public class GA {
     ArrayList<GARoute> population;
     double totalFitness;
     GARoute bestRoute;
+    boolean neigh = false;
 
     public GA(ArrayList<Point2D> points) {
 
@@ -23,6 +24,23 @@ public class GA {
         for (GARoute route : population) {
             route.normalizeFitness(totalFitness);
         }
+        bestRoute = population.get(0);
+    }
+
+    public GA(ArrayList<Point2D> points, int pop, boolean neigh) {
+
+        totalFitness = 0;
+        population = new ArrayList<>();
+
+        for (int i = 0; i < pop; i++) {
+            population.add(new GARoute(points));
+            population.get(i).shuffle();
+            totalFitness += population.get(i).initFitness();
+        }
+        for (GARoute route : population) {
+            route.normalizeFitness(totalFitness);
+        }
+        this.neigh = neigh;
         bestRoute = population.get(0);
     }
 
@@ -62,7 +80,7 @@ public class GA {
             GARoute list1 = pickOne();
             GARoute list2 = pickOne();
             ArrayList<Point2D> newList = crossover(list1.getPoints(), list2.getPoints());
-            newGen.add( new GARoute(newList));
+            newGen.add(new GARoute(newList));
             mutate(newGen.get(i), 0.01);
         }
         population = new ArrayList<>(newGen);
@@ -73,7 +91,13 @@ public class GA {
         for (int i = 0; i < route.getPoints().size(); i++) {
             if (random.nextDouble() < mutationRate) {
                 int indexA = (int) Math.floor(random.nextInt(route.getPoints().size()));
-                int indexB = (int) Math.floor(random.nextInt(route.getPoints().size()));
+                int indexB;
+                if (neigh) {
+                    indexB = (indexA + 1) % route.getPoints().size();
+                } else {
+                    indexB = (int) Math.floor(random.nextInt(route.getPoints().size()));
+
+                }
                 route.swap(indexA, indexB);
             }
         }
@@ -113,7 +137,6 @@ public class GA {
         ArrayList<Point2D> newList = new ArrayList<>();
         int start = new Random().nextInt(list1.size());
         int end = 1 + start + new Random().nextInt(list1.size() - start);
-
 
 
         for (int i = start; i < end; i++) {

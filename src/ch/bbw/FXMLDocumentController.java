@@ -43,9 +43,9 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private TextField amount;
     @FXML
-    private CheckBox showNumbers, showPaths, showHelpLines;
+    private CheckBox showNumbers, showPaths, showHelpLines, neighbourswitch;
     @FXML
-    private RadioButton greedy, random, tour, genetic, sm;
+    private RadioButton greedy, random, tour, genetic, sm, gpt;
     @FXML
     private GraphicsContext gc;
     private TextField iterations;
@@ -54,47 +54,82 @@ public class FXMLDocumentController implements Initializable {
     private CalcRoute calcRoute;
     private Stage primaryStage;
     private boolean pathShowing, animationPlaying, calculated;
+    @FXML
+    private Button button;
+
 
     @FXML
     public void handleButtonCalculate(ActionEvent event) {
+         if (calcRoute.isRunning()){
+             if (runningThread.isAlive()){
+                 runningThread.stop();
+             }
+             calcRoute.setTraining(false);
+             showRadios();
+             button.setText("calculate");
+             calcRoute.setRunning(false);
+             return;
+         }else {
+             hideRadios();
+             button.setText("stop");
+         }
+
         calculated = true;
         showPaths.setDisable(false);
         removeControls();
         setProgress();
-        if (greedy.isSelected()) {
-            Runnable runnable = () -> calcRoute.setGreedy((ArrayList<Point2D>) field.getPoint2DS());
-            runningThread = new Thread(runnable);
-            runningThread.start();
-
-        } else if (random.isSelected()) {
-            calcRoute.setRandomPath((ArrayList<Point2D>) field.getPoint2DS());
-        } else if (tour.isSelected()) {
-            addControls();
-            Runnable runnable = () -> calcRoute.setTwoOpt((ArrayList<Point2D>) field.getPoint2DS());
-            runningThread = new Thread(runnable);
-            runningThread.start();
-        } else if (genetic.isSelected()) {
-            Runnable runnable = () -> calcRoute.geneticAlg((ArrayList<Point2D>) field.getPoint2DS());
-            runningThread = new Thread(runnable);
-            runningThread.start();
-        } else if (sm.isSelected()) {
-            Runnable runnable = () -> calcRoute.simulatedAnnealing((ArrayList<Point2D>) field.getPoint2DS());
-            runningThread = new Thread(runnable);
-            runningThread.start();
+        if (runningThread.isAlive()){
+            calcRoute.setTraining(false);
         }
+        if (calcRoute.checkRunability()) {
+            if (greedy.isSelected()) {
+                runningThread = new Thread(() -> calcRoute.setGreedy((ArrayList<Point2D>) field.getPoint2DS()));
+            } else if (random.isSelected()) {
+                runningThread = new Thread(() -> calcRoute.setRandomPath((ArrayList<Point2D>) field.getPoint2DS()));
+            } else if (tour.isSelected()) {
+                addControlsTOPT();
+                return;
+            } else if (genetic.isSelected()) {
+                addControlsGen();
+                return;
+            } else if (sm.isSelected()) {
+                runningThread = new Thread(() -> calcRoute.simulatedAnnealing((ArrayList<Point2D>) field.getPoint2DS()));
+            } else if (gpt.isSelected()) {
+                runningThread = new Thread(() -> calcRoute.gpt((ArrayList<Point2D>) field.getPoint2DS()));
+            }
+        }
+        runningThread.start();
         showPaths.setSelected(true);
         pathShowing = true;
         draw();
         distance.setText("Distance: " + calcRoute.getDistance() + "");
+    }
+
+    private void hideRadios() {
+        greedy.setDisable(true);
+        random.setDisable(true);
+        tour.setDisable(true);
+        genetic.setDisable(true);
+        sm.setDisable(true);
+        gpt.setDisable(true);
+
+
+    }
+
+    private void showRadios() {
+        greedy.setDisable(false);
+        random.setDisable(false);
+        tour.setDisable(false);
+        genetic.setDisable(false);
+        sm.setDisable(false);
+        gpt.setDisable(false);
 
     }
 
     @FXML
     public void showPath(ActionEvent event) {
-        //needs to be deactiveated when animation is rolling
         pathShowing = showPaths.isSelected();
         draw();
-
     }
 
     @FXML
@@ -107,7 +142,7 @@ public class FXMLDocumentController implements Initializable {
             File file = fileChooser.showOpenDialog(primaryStage);
             try {
                 if (file != null) {
-                    field.importData(file.getName());
+                    field.importData(file.getAbsolutePath());
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -171,19 +206,44 @@ public class FXMLDocumentController implements Initializable {
     }
 
     @FXML
-    public void handleRunTraining(ActionEvent event) {
+    public void handleRunTrainingOPT(ActionEvent event) {
+        runningThread = new Thread(() -> calcRoute.setTwoOptAnimation((ArrayList<Point2D>) field.getPoint2DS(), Integer.parseInt(iterations.getText())));
+        runningThread.start();
+        showPaths.setSelected(true);
+        pathShowing = true;
+        draw();
+        distance.setText("Distance: " + calcRoute.getDistance() + "");
+    }
 
-        Runnable runnable = () -> calcRoute.setTwoOptAnimation((ArrayList<Point2D>) field.getPoint2DS(), Integer.parseInt(iterations.getText()));
-
-        new Thread(runnable).start();
+    @FXML
+    public void handleRunTrainingGEN(ActionEvent event) {
+        int pop = Integer.parseInt(iterations.getText());
+        runningThread = new Thread(() -> calcRoute.geneticAlg((ArrayList<Point2D>) field.getPoint2DS(), pop, neighbourswitch.isSelected()));
+        runningThread.start();
+        showPaths.setSelected(true);
+        pathShowing = true;
+        draw();
+        distance.setText("Distance: " + calcRoute.getDistance() + "");
+    }
+    @FXML
+    public void handleRunTrainingFastGEN(ActionEvent event) {
+        runningThread = new Thread(() -> calcRoute.geneticAlg((ArrayList<Point2D>) field.getPoint2DS(), 300, false));
+        runningThread.start();
+        showPaths.setSelected(true);
+        pathShowing = true;
+        draw();
+        distance.setText("Distance: " + calcRoute.getDistance() + "");
     }
 
     @FXML
     public void handleRunTrainingFast(ActionEvent event) {
+        runningThread = new Thread(() -> calcRoute.setTwoOpt((ArrayList<Point2D>) field.getPoint2DS()));
+        runningThread.start();
+        showPaths.setSelected(true);
+        pathShowing = true;
+        draw();
+        distance.setText("Distance: " + calcRoute.getDistance() + "");
 
-        Runnable runnable = () -> calcRoute.setTwoOpt((ArrayList<Point2D>) field.getPoint2DS());
-
-        new Thread(runnable).start();
     }
 
     public void setProgress() {
@@ -194,13 +254,14 @@ public class FXMLDocumentController implements Initializable {
         Platform.runLater(() -> progress.setProgress(1));
     }
 
-    private void addControls() {
+    private void addControlsTOPT() {
         Button button = new Button("Run Training");
-        button.setOnAction(this::handleRunTraining);
+        button.setOnAction(this::handleRunTrainingOPT);
         trainingHBox.getChildren().add(button);
 
         TextField textField = new TextField();
         iterations = textField;
+        textField.setPromptText("Improvement value");
         trainingHBox.getChildren().add(textField);
 
         Button button1 = new Button("Run Fast Training");
@@ -208,19 +269,30 @@ public class FXMLDocumentController implements Initializable {
         trainingHBox.getChildren().add(button1);
     }
 
+    private void addControlsGen() {
+        Button button = new Button("Run Training");
+        button.setOnAction(this::handleRunTrainingGEN);
+        trainingHBox.getChildren().add(button);
+
+        TextField textField = new TextField();
+        iterations = textField;
+        textField.setPromptText("population");
+        trainingHBox.getChildren().add(textField);
+
+        CheckBox checkBox = new CheckBox("Neighbour switching");
+        neighbourswitch = checkBox;
+        trainingHBox.getChildren().add(checkBox);
+
+        Button button1 = new Button("Run Normal Training");
+        button1.setOnAction(this::handleRunTrainingFastGEN);
+        trainingHBox.getChildren().add(button1);
+    }
+
     private void removeControls() {
         trainingHBox.getChildren().clear();
     }
 
-    public void alert() {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Still Running");
-            alert.setContentText("CalcRoute searching process already running");
-            alert.showAndWait();
-        });
 
-    }
 
 
     public void showNumbersClicked(ActionEvent event) {
@@ -333,6 +405,8 @@ public class FXMLDocumentController implements Initializable {
         showPaths.setDisable(true);
         animationPlaying = false;
         calculated = false;
+        runningThread= new Thread();
     }
 
 }
+
